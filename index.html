@@ -1,70 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bubble Sort Visualizer</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
+    body {
+      background-color: #f9fafb; /* light gray background */
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    header {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 1rem 0;
+    }
+
     #bars {
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      height: 300px;
-      margin-top: 30px;
+      height: 320px;
+      padding: 1rem;
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
+
     .bar {
       margin: 1px;
-      width: 20px;
+      width: 24px;
+      background-color: #93c5fd;
+      border-radius: 4px 4px 0 0;
+      transition: transform 0.5s ease, background-color 0.3s ease;
     }
-    .heading{
-      font-size: x-large;
-      color: black;
+
+    .heading {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #374151;
       text-align: center;
+      margin-bottom: 0.5rem;
     }
-    .step {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: center;
-      height: auto;
-    }
+
     .steps {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      height: auto;
+      gap: 1rem;
     }
+
+    .step {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     .el {
-      color: black;
-      width: 30px;
+      font-size: 0.9rem;
+      color: white;
+      min-width: 30px;
       height: 30px;
-      margin: 5px;
-      padding: 5px;
-      border: 1px solid black;
-      background-color: magenta;
+      background-color: #3b82f6;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 10px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       transition: transform 0.5s ease-in-out;
+    }
+
+    .btn {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #1d4ed8;
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-500 via-green-400 to-cyan-500 text-black text-center">
-  <header>
-    <h1 class="text-6xl text-black text-center">Bubble Sort Visualizer</h1>
+<body class="min-h-screen text-black text-center">
+   <header>
+    <h1 class="text-3xl font-semibold text-center text-gray-800">Bubble Sort Visualizer</h1>
   </header>
-  <main>
-    <h1 class="text-5xl text-black text-center m-3">Before Sorting</h1>
-    <div id="array" class="flex flex-end justify-center h-auto"></div>
-    <div id="bars" class="flex flex-end justify-center h-[500px]"></div>
-    
-    <button class="bg-gradient-to-br from-pink-700 to-purple-700 p-3 m-3 text-white shadow shadow-md rounded-md" onclick="generateBars()">Generate New Array</button>
-    <button class="bg-gradient-to-br from-pink-700 to-purple-700 p-3 m-3 text-white shadow shadow-md rounded-md" onclick="bubbleSort()">Start Bubble Sort</button>
 
-    <div id="steps" class="steps"></div>
+  <main class="flex flex-row gap-8 max-w-7xl mx-auto py-8 px-6">
+    <!-- Left panel -->
+    <div class="flex flex-col gap-6 w-[40%]">
+      <div>
+        <div id="bars"></div>
+      </div>
+      <div class="flex justify-center gap-4">
+        <button class="btn" onclick="generateBars()">Generate New Array</button>
+        <button class="btn" onclick="bubbleSort()">Start Bubble Sort</button>
+      </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="flex flex-col w-[60%] gap-4">
+      <h2 class="text-xl font-medium text-gray-700 text-center">Sorting Steps</h2>
+      <div id="array" class="flex flex-wrap gap-2 justify-center"></div>
+      <div id="steps" class="steps h-[600px] overflow-y-auto bg-white p-4 rounded-lg shadow-inner border border-gray-200"></div>
+    </div>
   </main>
 
   <script>
@@ -83,13 +128,10 @@
         const value = Math.floor(Math.random() * 100) + 5;
         array.push(value);
 
-        // Create bar
         const bar = document.createElement("div");
         bar.classList.add("bar");
         bar.style.height = `${value * 3}px`;
-        bar.style.backgroundColor = "white";
 
-        // Create number element
         const el = document.createElement("div");
         el.classList.add("el");
         el.innerText = value;
@@ -100,86 +142,84 @@
     }
 
     async function bubbleSort() {
-      const bars = document.getElementsByClassName("bar");
-      let els = document.getElementsByClassName("el");
+      let bars = barsContainer.getElementsByClassName("bar");
+      let els = elementsContainer.getElementsByClassName("el");
 
       for (let i = 0; i < array.length - 1; i++) {
         const parentDiv = document.createElement("div");
         const list = document.createElement("div");
         list.classList.add("step");
-        const headingDiv = document.createElement("div");
         const heading  = document.createElement("h1");
-        heading.classList.add("heading")
+        heading.classList.add("heading");
         heading.innerText = `After ${i+1} iteration`;
-        headingDiv.appendChild(heading);
-        parentDiv.appendChild(headingDiv);
+        parentDiv.appendChild(heading);
 
         for (let j = 0; j < array.length - i - 1; j++) {
-          bars[j].style.backgroundColor = "red";
-          bars[j + 1].style.backgroundColor = "red";
+          bars = barsContainer.getElementsByClassName("bar");
+          els = elementsContainer.getElementsByClassName("el");
 
-          await sleep(1500);
+          bars[j].style.background = "yellow";
+          bars[j + 1].style.background = "yellow";
+          await sleep(500);
 
           if (array[j] > array[j + 1]) {
-            // Animate number swap
-            await animateSwap(els[j], els[j + 1]);
+              bars[j].style.background = "red";
+              bars[j + 1].style.background = "red";
 
-            // Swap in array
-            let temp = array[j];
-            array[j] = array[j + 1];
-            array[j + 1] = temp;
+              await Promise.all([
+                  animateSwap(els[j], els[j + 1]), 
+                  animateSwap(bars[j], bars[j + 1])
+              ]);
 
-            // Swap in DOM for numbers
-            elementsContainer.insertBefore(els[j + 1], els[j]);
-            els = document.getElementsByClassName("el"); // refresh reference
+              [array[j], array[j + 1]] = [array[j + 1], array[j]];
+
+              elementsContainer.insertBefore(els[j + 1], els[j]);
+              barsContainer.insertBefore(bars[j + 1], bars[j]);
+
+              bars = barsContainer.getElementsByClassName("bar");
+              els = elementsContainer.getElementsByClassName("el");
           }
+
           const elStep = document.createElement("div");
           elStep.classList.add("el");
           elStep.innerText = array[j];
           list.appendChild(elStep);
-          bars[j].style.backgroundColor = "orange";
-          bars[j + 1].style.backgroundColor = "orange";
+
+          bars[j].style.background = "#00c851";
+          bars[j + 1].style.background = "#00c851";
+
+          await sleep(200);
         }
 
-        for(let j = array.length - i- 1; j<array.length;j++){
-            const elStep = document.createElement("div");
-            elStep.classList.add("el");
-            elStep.innerText = array[j];
-            list.appendChild(elStep);
+        for (let j = array.length - i - 1; j < array.length; j++) {
+          const elStep = document.createElement("div");
+          elStep.classList.add("el");
+          elStep.innerText = array[j];
+          list.appendChild(elStep);
         }
         parentDiv.appendChild(list);
-
         stepsContainer.appendChild(parentDiv);
 
-        bars[array.length - i - 1].style.backgroundColor = "green";
+        bars[array.length - i - 1].style.background = "#00c851";
       }
-      bars[0].style.backgroundColor = "magenta";
+      bars[0].style.background = "#00c851";
     }
 
     function animateSwap(el1, el2) {
-      return new Promise(resolve => {
-        const rect1 = el1.getBoundingClientRect();
-        const rect2 = el2.getBoundingClientRect();
+        return new Promise(resolve => {
+            const rect1 = el1.getBoundingClientRect();
+            const rect2 = el2.getBoundingClientRect();
+            const dx = rect2.left - rect1.left;
 
-        const dx = rect2.left - rect1.left;
+            el1.style.transform = `translateX(${dx}px)`;
+            el2.style.transform = `translateX(${-dx}px)`;
 
-        // Move in opposite arcs
-        el1.style.transform = `translate(${dx}px, -40px)`;
-        el2.style.transform = `translate(${-dx}px, 40px)`;
-
-        setTimeout(() => {
-          // Return to baseline
-          el1.style.transform = `translate(${dx}px, 0)`;
-          el2.style.transform = `translate(${-dx}px, 0)`;
-
-          setTimeout(() => {
-            // Reset
-            el1.style.transform = "";
-            el2.style.transform = "";
-            resolve();
-          }, 500);
-        }, 500);
-      });
+            setTimeout(() => {
+                el1.style.transform = "";
+                el2.style.transform = "";
+                resolve();
+            }, 500);
+        });
     }
 
     function sleep(ms) {
